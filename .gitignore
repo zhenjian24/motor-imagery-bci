@@ -1,0 +1,27 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ===== 虚拟环境 =====
+.venv/  venv/  env/  envs/
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+
+# ===== 切勿提交 MOABB / MNE 数据（体积巨大） =====
+mne_data/
+*.gdf  *.edf  *.fif  *.vhdr  *.eeg  *.bdf  *.set  *.cnt
+data/raw/
+
+# ===== 模型 / 结果 / 日志（结果可本地留档，不入库） =====
+models/  results/  runs/  logs/  wandb/  *.pt  *.pth  *.onnx
+
+# ===== 编辑器 / 系统 =====
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
