@@ -1,7 +1,8 @@
 # 运动想象四类分类基线 (BCI Competition IV-2a)
 
 基于 MOABB 的 `BNCI2014_001`（即 BCI Competition IV 2a）数据集，
-用 **CSP + LDA** 复现四类运动想象（左手 / 右手 / 双脚 / 舌头）EEG 分类基线。
+用 **CSP + LDA** 复现四类运动想象（左手 / 右手 / 双脚 / 舌头）EEG 分类基线，
+并进一步实现 **FBCSP + 互信息特征选择** 的优化方案。
 
 ## 环境
 
@@ -12,8 +13,13 @@ pip install -r requirements.txt
 ## 运行
 
 ```bash
+# 基线方案（CSP + LDA）
 python motor_imagery_baseline.py                # 默认 4 类
 python motor_imagery_baseline.py --n_classes 2  # 左右二分类
+
+# 优化方案（FBCSP + 互信息特征选择 + 黄金时间窗 0.5-2.5s）
+python fbcsp_baseline.py                # 默认 4 类
+python fbcsp_baseline.py --n_classes 2  # 左右二分类
 ```
 
 首次运行会自动通过 MOABB 下载数据（默认到 `MNE_DATA` 指向的目录），无需手动准备 `.gdf` 文件。
@@ -21,7 +27,10 @@ python motor_imagery_baseline.py --n_classes 2  # 左右二分类
 ## 流程
 
 ```
-读取(MOABB) -> 带通 8-30Hz -> CSP -> LDA -> 分层 10 折 CV -> acc / kappa
+基线:  读取(MOABB) -> 带通 8-30Hz -> CSP -> LDA -> 分层 10 折 CV -> acc / kappa
+
+优化:  读取(MOABB, 截取 0.5-2.5s) -> 4-40Hz 分 9 个子频带 -> 各频带 CSP
+       -> 互信息筛选 Top 特征 -> Shrinkage LDA -> 分层 10 折 CV -> acc / kappa
 ```
 
 ## 输出
@@ -33,7 +42,8 @@ python motor_imagery_baseline.py --n_classes 2  # 左右二分类
 
 ```
 motor-imagery-bci/
-├── motor_imagery_baseline.py   # 主脚本
+├── motor_imagery_baseline.py   # 基线：CSP + LDA
+├── fbcsp_baseline.py           # 优化：FBCSP + 互信息特征选择 + 时间窗裁剪
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
